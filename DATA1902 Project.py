@@ -11,7 +11,7 @@ def s(word):
 df['Date']= df['Date'].apply(s)
 
 
-# In[2]:
+# In[41]:
 
 
 sums= df.sum(axis=0)
@@ -22,7 +22,7 @@ sums_filter= sums.drop(['Date', 'Title', 'Name'])
 # Looking at data overall
 sums_filter= sums_filter.astype('int64') #convert from object to int64 type
 total= sums_filter.sum(axis=0)
-print("There are a total of", total, "values in our dataset.")
+print("There are a total of", total, "values in our dataset, with", df.shape[0], "rows and", df.shape[1], "columns.")
 
 word= sums_filter.filter(regex= '^[A-Za-z]+$', axis=0)
 print("The most used word is", "'" + word.idxmax() +"'.")
@@ -30,17 +30,20 @@ print("The most used word is", "'" + word.idxmax() +"'.")
 number= sums_filter.filter(regex= '[0-9]', axis=0)
 print("The most used number is", number.idxmax() + ".")
 
-
-# In[21]:
-
-
 sums_filter= sums_filter.sort_values(ascending= False)
-top_100= sums_filter[:25]/total
+top_100= sums_filter[:100]/tota
 import matplotlib.pyplot as plt
-top_100.plot(kind="bar", figsize=(20,10))
+plt.title('Most 100 frequent words')
+top_100.plot(kind="bar")
 
 
-# In[57]:
+# In[42]:
+
+
+min(sums_filter)
+
+
+# In[43]:
 
 
 import matplotlib.pyplot as plt
@@ -54,17 +57,14 @@ def filter_by_name(names_list):
         name_sum = name_sum.drop(['Date', 'Title', 'Name'])
         name_sum = name_sum.astype('int64') #convert from object to int64 type
         name_sum = name_sum.sort_values(ascending= False)
-        top25= name_sum[:25]
+        total= name_sum.sum(axis=0)
+        top25= name_sum[:25]/total
         
         fig = plt.figure(figsize=plt.figaspect(1.))
         #ax= fig.add_subplot(2, 2, h)
         top25.plot(kind="bar")
-        plt.title(str(i))
-        plt.xlabel('Top 25 Words')
-        plt.ylabel('Frequencies')
+        plt.title(str(i) + "'s top 25 words")
         
-        #h+=1
-        print(name_sum['police'])
         
 def name_summary(names):
     for i in names:
@@ -78,22 +78,22 @@ def name_summary(names):
         #Getting total no.
         total= name_sum.sum(axis=0)   
         distinct= name_sum.count()
-        print("There are a total of", total, "values and", distinct, "distinct values for", str(i) + ".")
+        print("There are a total of", total, "values and", distinct, "distinct values for", name_data.shape[0], "speeches by", str(i) + ".")
         
         #Distinct words
         words= name_sum.filter(regex= '^[A-Za-z]+$', axis=0)
         words_distinct= words.count()
-        print(str(i) + " has used", words_distinct, "distinct words altogether.")
+        print(str(i) + " had used", words_distinct, "distinct words altogether.")
         
         #print("Most common word for " + str(i) + " is" + " '" + name_sum.idxmax() + "'" + ", occuring", name_sum.max(), "times.")
 
         #Getting median frequency of word
         median= name_sum.median()
-        print("The median frequemcy of words for " + str(i) + " is " + str(median))
+        print("The median frequency of words for " + str(i) + " is " + str(median))
 
         #Getting mean frequency of word
         mean= int(name_sum.mean())
-        print("The mean frequemcy of words for " + str(i) + " is " + str(mean))
+        print("The mean frequency of words for " + str(i) + " is " + str(mean))
         print() 
     
 names= df['Name'].unique().tolist()
@@ -101,7 +101,7 @@ filter_by_name(names)
 name_summary(names)
 
 
-# In[48]:
+# In[44]:
 
 
 get_ipython().run_line_magic('matplotlib', 'notebook')
@@ -159,16 +159,9 @@ def yearly_summary(year):
     
     
 
-    
 for i in sorted(year):
     yearly_summary(i)
     yearly_plot(i)
-
-
-# In[35]:
-
-
-print(date_frame)
 
 
 # In[ ]:
